@@ -70,6 +70,7 @@ int	get_next_line(const int fd, char **line)//TODO переписать ЕБУЧ
 	static t_lst	*lst;
 	t_lst			*current;
 	char			*str;
+	ssize_t 		len;
 
 	str = ft_memalloc(0);
 	if (!line || fd < 0 || (read(fd, str, 0) == -1))
@@ -95,16 +96,16 @@ int	get_next_line(const int fd, char **line)//TODO переписать ЕБУЧ
 		{
 			if (!(current->next = ft_memalloc(sizeof(t_lst))))
 				return (-1);
+			current = current->next;
 			current->end = read(fd, current->buf, BUFF_SIZE) == BUFF_SIZE ? 0 : 1;
 			if (current->end)
 				return (0);
-			current = current->next;
 			current->fd = fd;
 		}
 		else if (ft_is_n(current->buf) == BUFF_SIZE)
 		{
 			if (current->buf)
-				*line = ft_strjoin(*line, current->buf);
+				*line = ft_strjoin(*line, current->buf);//TODO запилить memjoin
 			(current->wnum)++;
 			current->end = read(fd, current->buf, BUFF_SIZE) == BUFF_SIZE ? 0 : 1;
 			if (!(current->len))
