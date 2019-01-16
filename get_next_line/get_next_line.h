@@ -11,6 +11,7 @@ typedef struct	s_lst
 {
 	int				fd;
 	char			buf[BUFF_SIZE];
+	char 			*stop;
 //	t_ls			*sbuf;
 	ssize_t 		len;
 //	ssize_t			wnum;

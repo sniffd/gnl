@@ -28,5 +28,9 @@ int	main()
 //	char 	*str = ft_strsplit("123*45*6*78*9*", '*');
 //	printf("%s", str);а  и м иам пм пл пмулапм лум плуамбулкм пуыблмп лмп уклпм у мпла цуль аулцкьаулць алцуаь цулаь лцуаь цулаьлуцьа лцуьа цлуьалцуьа лцуь аслйцуь ацлуь а
 	int fd = open("/Users/fdaryn-h/Desktop/test", O_RDONLY);
+	int fd2 = open("/Users/fdaryn-h/Desktop/test2", O_RDONLY);
+	char *line;
+	get_next_line(fd, &line);
+	get_next_line(fd2, &line);
 	return (0);
 }
