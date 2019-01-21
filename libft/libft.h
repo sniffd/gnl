@@ -91,4 +91,7 @@ t_list			*ft_lstlast(t_list *lst);
 char			*ft_memrchr(const void *s, int c, size_t n);
 char			*ft_memcat(void *s1, const void *s2, size_t l1, size_t l2);
 void			*ft_memjoin(const void *s1, const void *s2, size_t l1, size_t l2);
+void			*ft_memfjoin(void **s1, const void *s2, size_t l1, size_t l2);
+void			*ft_memsub(char const *s, unsigned int start, size_t len);
+
 #endif
