@@ -11,11 +11,11 @@ int	ft_init(t_lst **lst, int fd)
 	if (!(*lst = ft_memalloc(sizeof(t_lst))))
 		return (-1);
 	(*lst)->fd = fd;
-	(*lst)->len = read(fd, (*lst)->buf, BUFF_SIZE);
+	(*lst)->isn = 1;
 	return (0);
 }
 
-int	get_next_line(const int fd, char **line)//TODO переписать ЕБУЧИЙ ГНЛ
+int	get_next_line(const int fd, char **line)
 {
 	static t_lst	*lst;
 	t_lst			*current;
@@ -33,34 +33,40 @@ int	get_next_line(const int fd, char **line)//TODO переписать ЕБУЧ
 			return (-1);
 	}
 	current = lst;
-	*line = ft_strnew(0);
 	if (fd != current->fd)
 	{
 		while(current->next && fd != current->fd)
 			current = current->next;
-		if (!(current->next = ft_memalloc(sizeof(t_lst))))
-			return (-1);
+		if (fd != current->fd)
+		{
+			if (!(current->next = ft_memalloc(sizeof(t_lst))))
+				return (-1);
 		current = current->next;
-		current->len = read(fd, current->buf, BUFF_SIZE);
 		current->fd = fd;
+		current->isn = 1;
+		}
 	}
+	if (!(current->null))
+		*line = ft_strnew(0);
 	while (1)
 	{
-		if (!(current->len) && current->wr)
+		if (!(current->len))
+			current->len = read(fd, current->buf, BUFF_SIZE);
+		if (!(current->len))
 		{
-			current->wr = 0;
-			(*line)[len] = '\0';
-			return (1);
-		}
-		else if (!(current->len) && !(current->wr))
-		{
-			(*line)[len] = '\0';
+			if (!current->isn)
+			{
+				(*line)[len] = '\0';
+				current->isn = 1;
+				current->null = 1;
+				return (1);
+			}
 			return (0);
 		}
 		if (N_LOCATION)
 		{
 			*line = (char *)ft_memfjoin((void **)line, current->buf, (size_t)len, ((size_t)(N_LOCATION - current->buf)) + 1);
-			current->wr = 1;
+			current->isn = 1;
 			len += (N_LOCATION - current->buf);
 			(*line)[len] = '\0';
 			current->olen = current->len;
@@ -80,19 +86,22 @@ int	get_next_line(const int fd, char **line)//TODO переписать ЕБУЧ
 				ft_memcpy(current->buf, tmp, (size_t)current->len);
 				free(tmp);
 			}
-			else if (fd != 0)
-				current->len = read(fd, current->buf, BUFF_SIZE);
 			else
-				return (1);
-			current->wr = 0;
+			{
+				*(current->buf) = '\0';
+				current->len = 0;
+			}
+			(*line)[len] = '\0';
 			return (1);
 		}
 		else
 		{
-			*line = ft_memfjoin((void **)line, current->buf, (size_t)len, (size_t)current->len);
-			current->wr = 1;
+			*line = ft_memfjoin((void **) line, current->buf, (size_t) len, (size_t) current->len);
 			len += current->len;
-			current->len = read(fd, current->buf, BUFF_SIZE);
+			current->len = 0;
+			*(current->buf) = '\0';
+			current->olen = 0;
+			current->isn = 0;
 		}
 	}
 }

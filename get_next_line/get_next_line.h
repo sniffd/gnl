@@ -9,7 +9,8 @@ typedef struct	s_lst
 	char			buf[BUFF_SIZE];
 	ssize_t 		len;
 	ssize_t 		olen;
-	int				wr;
+	int 			isn;
+	int 			null;
 	struct s_lst	*next;
 }				t_lst;
 int	get_next_line(const int fd, char **line);
